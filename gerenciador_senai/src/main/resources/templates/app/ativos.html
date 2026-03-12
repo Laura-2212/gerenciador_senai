@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Ativos Patrimoniais | Sistema de Estoque</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+	<div th:replace="~{fragments/header :: header}"></div>
+
+	<main class="page">
+		<section class="section">
+			<div class="container">
+				<div class="page-header">
+					<div>
+						<h1>Ativos patrimoniais</h1>
+						<p>Cadastre e acompanhe os ativos da unidade escolar.</p>
+					</div>
+				</div>
+
+				<div th:replace="~{fragments/messages :: messages}"></div>
+
+				<div class="content-grid">
+					<section class="panel">
+						<div class="panel-header">
+							<h2 th:text="${ativo.id != null ? 'Editar ativo' : 'Novo ativo'}"></h2>
+							<a th:if="${ativo.id != null}" th:href="@{/app/ativos} ">limpar formulario</a>
+						</div>
+
+						<form th:action="@{/app/ativos/salvar}" th:object="${ativo}" method="post" class="form-grid">
+							<input type="hidden" th:field="*{id}" />
+
+							<div class="two-columns">
+								<div>
+									<label for="codigoPatrimonio">codigo patrimonial</label>
+									<input id="codigoPatrimonio" type="text" th:field="*{codigoPatrimonio}" placeholder="PAT-001" />
+								</div>
+
+								<div>
+									<label for="nome">nome</label>
+									<input id="nome" type="text" th:field="*{nome}" placeholder="Nome do ativo" />
+								</div>
+							</div>
+
+							<div>
+								<label for="descricao">descricao</label>
+								<textarea id="descricao" th:field="*{descricao}" rows="4" placeholder="Descricao do ativo"></textarea>
+							</div>
+
+							<div class="two-columns">
+								<div>
+									<label for="localizacao">localizacao</label>
+									<input id="localizacao" type="text" th:field="*{localizacao}" placeholder="Sala, laboratorio, almoxarifado" />
+								</div>
+
+								<div>
+									<label for="responsavel">responsavel</label>
+									<input id="responsavel" type="text" th:field="*{responsavel}" placeholder="Responsavel pelo ativo" />
+								</div>
+							</div>
+
+							<div class="two-columns">
+								<div>
+									<label for="statusAtivo">status</label>
+									<select id="statusAtivo" th:field="*{statusAtivo}">
+										<option value="">Selecione</option>
+										<option th:each="status : ${statusAtivos}" th:value="${status}" th:text="${status}"></option>
+									</select>
+								</div>
+
+								<div>
+									<label for="dataAquisicao">data de aquisicao</label>
+									<input id="dataAquisicao" type="date" th:field="*{dataAquisicao}" />
+								</div>
+							</div>
+
+							<div>
+								<label for="valorAquisicao">valor de aquisicao</label>
+								<input id="valorAquisicao" type="number" step="0.01" min="0" th:field="*{valorAquisicao}" />
+							</div>
+
+							<button class="button" type="submit">salvar ativo</button>
+						</form>
+					</section>
+
+					<section class="panel">
+						<div class="panel-header">
+							<h2>Lista de ativos</h2>
+						</div>
+
+						<div class="table-wrapper">
+							<table>
+								<thead>
+									<tr>
+										<th>codigo</th>
+										<th>nome</th>
+										<th>localizacao</th>
+										<th>status</th>
+										<th>acoes</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="ativo : ${ativos}">
+										<td th:text="${ativo.codigoPatrimonio}"></td>
+										<td th:text="${ativo.nome}"></td>
+										<td th:text="${ativo.localizacao}"></td>
+										<td th:text="${ativo.statusAtivo}"></td>
+										<td class="actions">
+											<a th:href="@{/app/ativos/editar/{id}(id=${ativo.id})}">editar</a>
+											<form th:action="@{/app/ativos/{id}/excluir(id=${ativo.id})}" method="post">
+												<button class="button-link danger" type="submit">excluir</button>
+											</form>
+										</td>
+									</tr>
+									<tr th:if="${#lists.isEmpty(ativos)}">
+										<td colspan="5">Nenhum ativo cadastrado.</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</section>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

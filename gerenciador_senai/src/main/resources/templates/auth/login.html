@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Login | Sistema de Estoque</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+	<div th:replace="~{fragments/header :: header}"></div>
+
+	<main class="page">
+		<section class="section">
+			<div class="container auth-wrapper">
+				<div class="form-card" >
+					<h1>Login</h1>
+					<p>Entre com NIF e senha para acessar a area interna.</p>
+
+					<div th:replace="~{fragments/messages :: messages}"></div>
+
+					<form th:action="@{/auth/login}" method="post" class="form-grid">
+						<div>
+							<label for="nif">NIF</label>
+							<input id="nif" type="text" name="nif" placeholder="Digite seu nif" />
+						</div>
+
+						<div>
+							<label for="senha">Senha</label>
+							<input id="senha" type="password" name="senha" placeholder="Digite sua senha" />
+						</div>
+
+						<button class="btn" type="submit">Entrar</button>
+					</form>
+
+					<p class="helper-text">
+						Não tem conta?
+						<a th:href="@{/cadastro}">Faça o cadastro</a>
+					</p>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

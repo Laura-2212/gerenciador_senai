@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Movimentacoes | Sistema de Estoque</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+	<div th:replace="~{fragments/header :: header}"></div>
+
+	<main class="page">
+		<section class="section">
+			<div class="container">
+				<div class="page-header">
+					<div>
+						<h1>Movimentacoes</h1>
+						<p>Registre entradas e saidas de materiais no estoque.</p>
+					</div>
+				</div>
+
+				<div th:replace="~{fragments/messages :: messages}"></div>
+
+				<div class="content-grid">
+					<section class="panel">
+						<div class="panel-header">
+							<h2 th:text="${movimentacao.id != null ? 'Editar movimentacao' : 'Nova movimentacao'}"></h2>
+							<a th:if="${movimentacao.id != null}" th:href="@{/app/movimentacoes}">limpar formulario</a>
+						</div>
+
+						<form th:action="@{/app/movimentacoes/salvar}" method="post" class="form-grid">
+							<input type="hidden" name="id" th:value="${movimentacao.id}" />
+
+							<div>
+								<label for="materialId">material</label>
+								<select id="materialId" name="materialId">
+									<option value="">Selecione</option>
+									<option th:each="materialItem : ${materiais}" th:value="${materialItem.id}"
+										th:selected="${movimentacao.material != null and movimentacao.material.id == materialItem.id}"
+										th:text="${materialItem.nome + ' | estoque atual: ' + materialItem.quantidadeEmEstoque}"></option>
+								</select>
+							</div>
+
+							<div class="two-columns">
+								<div>
+									<label for="tipoMovimentacao">tipo</label>
+									<select id="tipoMovimentacao" name="tipoMovimentacao">
+										<option value="">Selecione</option>
+										<option th:each="tipo : ${tiposMovimentacao}" th:value="${tipo}"
+											th:selected="${movimentacao.tipoMovimentacao == tipo}" th:text="${tipo}"></option>
+									</select>
+								</div>
+
+								<div>
+									<label for="quantidade">quantidade</label>
+									<input id="quantidade" type="number" min="1" name="quantidade" th:value="${movimentacao.quantidade}" />
+								</div>
+							</div>
+
+							<div>
+								<label for="observacao">observacao</label>
+								<textarea id="observacao" name="observacao" rows="4" placeholder="Informacao extra sobre a movimentacao" th:text="${movimentacao.observacao}"></textarea>
+							</div>
+
+							<button class="button" type="submit">salvar movimentacao</button>
+						</form>
+					</section>
+
+					<section class="panel">
+						<div class="panel-header">
+							<h2>Historico de movimentacoes</h2>
+						</div>
+
+						<div class="table-wrapper">
+							<table>
+								<thead>
+									<tr>
+										<th>data</th>
+										<th>material</th>
+										<th>tipo</th>
+										<th>qtd</th>
+										<th>responsavel</th>
+										<th>acoes</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="movimentacao : ${movimentacoes}">
+										<td th:text="${movimentacao.dataMovimentacao}"></td>
+										<td th:text="${movimentacao.material.nome}"></td>
+										<td th:text="${movimentacao.tipoMovimentacao}"></td>
+										<td th:text="${movimentacao.quantidade}"></td>
+										<td th:text="${movimentacao.responsavel}"></td>
+										<td class="actions">
+											<a th:href="@{/app/movimentacoes/editar/{id}(id=${movimentacao.id})}">editar</a>
+											<form th:action="@{/app/movimentacoes/{id}/excluir(id=${movimentacao.id})}" method="post">
+												<button class="button-link danger" type="submit">excluir</button>
+											</form>
+										</td>
+									</tr>
+									<tr th:if="${#lists.isEmpty(movimentacoes)}">
+										<td colspan="6">Nenhuma movimentacao cadastrada.</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</section>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

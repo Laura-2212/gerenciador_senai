@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<body>
+	<div th:fragment="messages">
+		<div th:if="${msg}" class="alert" th:classappend="${classe == 'verde'} ? ' alert-success' : ' alert-error'">
+			<p th:text="${msg}"></p>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema de Estoque</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"> 
+</head>
+<body>
+    
+    <header th:fragment="header" class="header">
+        <div class="container">
+            
+            <a class="brand" th:href="@{/}">
+                <img class="logo" th:src="@{/img/logo-senai.png}" alt="Logo Senai" />
+                <div>
+                    <strong>Sistema de estoque</strong>
+                </div>
+            </a>
+
+            <nav class="nav" aria-label="Navegacao principal">
+                
+                <div th:if="${session.usuarioLogado}" class="nav">
+                    <a th:href="@{/app}">Dashboard</a>
+                    <a th:href="@{/app/categorias}">Categorias</a>
+                    <a th:href="@{/app/materiais}">Materiais</a>
+                    <a th:href="@{/app/movimentacoes}">Movimentacoes</a>
+                    <a th:href="@{/app/ativos}">Ativos</a>
+                    <a class="btn btn-outline" th:href="@{/logout}">Sair</a>
+                </div>
+                
+                <div th:unless="${session.usuarioLogado}" class="nav">
+                    <a th:href="@{/cadastro}">Cadastro</a>
+                    <a class="btn btn-outline" th:href="@{/login}">Login</a>
+                </div>
+                
+            </nav>
+        </div>
+    </header>
+    
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Materiais | Sistema de Estoque</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+	<div th:replace="~{fragments/header :: header}"></div>
+
+	<main class="page">
+		<section class="section">
+			<div class="container">
+				<div class="page-header">
+					<div>
+						<h1>Materiais</h1>
+						<p>Cadastre os materiais e acompanhe o estoque atual.</p>
+					</div>
+				</div>
+
+				<div th:replace="~{fragments/messages :: messages}"></div>
+
+				<div class="content-grid">
+					<section class="panel">
+						<div class="panel-header">
+							<h2 th:text="${material.id != null ? 'Editar material' : 'Novo material'}"></h2>
+							<a th:if="${material.id != null}" th:href="@{/app/materiais}">limpar formulario</a>
+						</div>
+
+						<form th:action="@{/app/materiais/salvar}" th:object="${material}" method="post" class="form-grid">
+							<input type="hidden" th:field="*{id}" />
+
+							<div>
+								<label for="nome">nome</label>
+								<input id="nome" type="text" th:field="*{nome}" placeholder="Nome do material" />
+							</div>
+
+							<div>
+								<label for="descricao">descricao</label>
+								<textarea id="descricao" th:field="*{descricao}" rows="4" placeholder="Descricao do material"></textarea>
+							</div>
+
+							<div class="two-columns">
+								<div>
+									<label for="unidadeMedida">unidade</label>
+									<input id="unidadeMedida" type="text" th:field="*{unidadeMedida}" placeholder="unidade, caixa, pacote" />
+								</div>
+
+								<div>
+									<label for="quantidadeMinima">quantidade minima</label>
+									<input id="quantidadeMinima" type="number" min="0" th:field="*{quantidadeMinima}" />
+								</div>
+							</div>
+
+							<div>
+								<label for="categoriaId">categoria</label>
+								<select id="categoriaId" name="categoriaId">
+									<option value="">Selecione</option>
+									<option th:each="categoriaItem : ${categorias}" th:value="${categoriaItem.id}"
+										th:selected="${material.categoria != null and material.categoria.id == categoriaItem.id}"
+										th:text="${categoriaItem.nome}"></option>
+								</select>
+							</div>
+
+							<button class="button" type="submit">salvar material</button>
+						</form>
+					</section>
+
+					<section class="panel">
+						<div class="panel-header">
+							<h2>Lista de materiais</h2>
+						</div>
+
+						<div class="table-wrapper">
+							<table>
+								<thead>
+									<tr>
+										<th>nome</th>
+										<th>categoria</th>
+										<th>estoque</th>
+										<th>minimo</th>
+										<th>acoes</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="material : ${materiais}" th:classappend="${material.quantidadeEmEstoque <= material.quantidadeMinima} ? 'row-warning' : ''">
+										<td th:text="${material.nome}"></td>
+										<td th:text="${material.categoria.nome}"></td>
+										<td th:text="${material.quantidadeEmEstoque}"></td>
+										<td th:text="${material.quantidadeMinima}"></td>
+										<td class="actions">
+											<a th:href="@{/app/materiais/editar/{id}(id=${material.id})}">editar</a>
+											<form th:action="@{/app/materiais/{id}/excluir(id=${material.id})}" method="post">
+												<button class="btn-link danger" type="submit">excluir</button>
+											</form>
+										</td>
+									</tr>
+									<tr th:if="${#lists.isEmpty(materiais)}">
+										<td colspan="5">Nenhum material cadastrado.</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</section>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

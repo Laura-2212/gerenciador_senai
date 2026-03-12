@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Dashboard | Sistema de Estoque</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+	<div th:replace="~{fragments/header :: header}"></div>
+
+	<main class="page">
+		<section class="section">
+			<div class="container">
+				<div class="page-header">
+					<div>
+						<h1>Dashboard</h1>
+						<p th:text="${'Usuario logado: ' + nomeUsuario + ' | NIF: ' + nifUsuario}"></p>
+					</div>
+				</div>
+
+				<div th:replace="~{fragments/messages :: messages}"></div>
+
+				<div class="stats-grid">
+					<div class="stat-card">
+						<span>funcionarios ativos</span>
+						<strong th:text="${totalFuncionarios}"></strong>
+					</div>
+					<div class="stat-card">
+						<span>categorias</span>
+						<strong th:text="${totalCategorias}"></strong>
+					</div>
+					<div class="stat-card">
+						<span>materiais</span>
+						<strong th:text="${totalMateriais}"></strong>
+					</div>
+					<div class="stat-card">
+						<span>movimentacoes</span>
+						<strong th:text="${totalMovimentacoes}"></strong>
+					</div>
+					<div class="stat-card">
+						<span>ativos</span>
+						<strong th:text="${totalAtivos}"></strong>
+					</div>
+				</div>
+
+				<div class="content-grid">
+					<section class="panel">
+						<div class="panel-header">
+							<h2>Movimentacoes recentes</h2>
+							<a th:href="@{/app/movimentacoes}">ver todas</a>
+						</div>
+
+						<div class="table-wrapper">
+							<table>
+								<thead>
+									<tr>
+										<th>material</th>
+										<th>tipo</th>
+										<th>qtd</th>
+										<th>responsavel</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="movimentacao : ${movimentacoesRecentes}">
+										<td th:text="${movimentacao.material.nome}"></td>
+										<td th:text="${movimentacao.tipoMovimentacao}"></td>
+										<td th:text="${movimentacao.quantidade}"></td>
+										<td th:text="${movimentacao.responsavel}"></td>
+									</tr>
+									<tr th:if="${#lists.isEmpty(movimentacoesRecentes)}">
+										<td colspan="4">Nenhuma movimentacao cadastrada.</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</section>
+
+					<section class="panel">
+						<div class="panel-header">
+							<h2>Estoque baixo</h2>
+							<a th:href="@{/app/materiais}">abrir materiais</a>
+						</div>
+
+						<ul class="warning-list">
+							<li th:each="material : ${materiaisComEstoqueBaixo}">
+								<strong th:text="${material.nome}"></strong>
+								<span th:text="${'estoque: ' + material.quantidadeEmEstoque + ' | minimo: ' + material.quantidadeMinima}"></span>
+							</li>
+							<li th:if="${#lists.isEmpty(materiaisComEstoqueBaixo)}">Nenhum material com estoque baixo.</li>
+						</ul>
+					</section>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

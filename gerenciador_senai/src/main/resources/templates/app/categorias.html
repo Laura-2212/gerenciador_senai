@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Categorias | Sistema de Estoque</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+	<div th:replace="~{fragments/header :: header}"></div>
+
+	<main class="page">
+		<section class="section">
+			<div class="container">
+				<div class="page-header">
+					<div>
+						<h1>Categorias</h1>
+						<p>Cadastre e organize as categorias dos materiais.</p>
+					</div>
+				</div>
+
+				<div th:replace="~{fragments/messages :: messages}"></div>
+
+				<div class="content-grid">
+					<section class="panel">
+						<div class="panel-header">
+							<h2 th:text="${categoria.id != null ? 'Editar categoria' : 'Nova categoria'}"></h2>
+							<a th:if="${categoria.id != null}" th:href="@{/app/categorias}">limpar formulario</a>
+						</div>
+
+						<form th:action="@{/app/categorias/salvar}" th:object="${categoria}" method="post" class="form-grid">
+							<input type="hidden" th:field="*{id}" />
+
+							<div>
+								<label for="nome">nome</label>
+								<input id="nome" type="text" th:field="*{nome}" placeholder="Nome da categoria" />
+							</div>
+
+							<div>
+								<label for="descricao">descricao</label>
+								<textarea id="descricao" th:field="*{descricao}" rows="4" placeholder="Descricao da categoria"></textarea>
+							</div>
+
+							<button class="button" type="submit">salvar categoria</button>
+						</form>
+					</section>
+
+					<section class="panel">
+						<div class="panel-header">
+							<h2>Lista de categorias</h2>
+						</div>
+
+						<div class="table-wrapper">
+							<table>
+								<thead>
+									<tr>
+										<th>nome</th>
+										<th>descricao</th>
+										<th>acoes</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="categoria : ${categorias}">
+										<td th:text="${categoria.nome}"></td>
+										<td th:text="${categoria.descricao != null and !categoria.descricao.isBlank() ? categoria.descricao : '-'}"></td>
+										<td class="actions">
+											<a th:href="@{/app/categorias/editar/{id}(id=${categoria.id})}">editar</a>
+											<form th:action="@{/app/categorias/{id}/excluir(id=${categoria.id})}" method="post">
+												<button class="button-link danger" type="submit">excluir</button>
+											</form>
+										</td>
+									</tr>
+									<tr th:if="${#lists.isEmpty(categorias)}">
+										<td colspan="3">Nenhuma categoria cadastrada.</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</section>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
